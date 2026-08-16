@@ -3,12 +3,15 @@
 import webpush from 'web-push';
 import { createClient } from './db/supabase/server';
 
-// Initialize web-push with VAPID keys
-webpush.setVapidDetails(
-  'mailto:contact@nowapp.com', // Needs to be a valid mailto or URL
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string,
-  process.env.VAPID_PRIVATE_KEY as string
-);
+function initWebPush() {
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webpush.setVapidDetails(
+      'mailto:contact@nowapp.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  }
+}
 
 export async function savePushSubscription(subscription: any) {
   const supabase = await createClient();
@@ -41,6 +44,8 @@ export async function savePushSubscription(subscription: any) {
 }
 
 export async function sendPushNotification(userId: string, title: string, body: string, url: string = '/') {
+  initWebPush();
+  
   // Use service role client to fetch subscriptions (bypassing RLS so we can send to others)
   const supabase = await createClient(); // Actually, server actions run with user's auth context.
   // Wait, to send to someone else, we need to bypass RLS to read their subscription.
