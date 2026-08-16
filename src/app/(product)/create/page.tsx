@@ -26,12 +26,13 @@ export default function CreateMomentPage() {
   };
 
   return (
-    <div className="p-6 h-[100dvh] flex flex-col bg-background relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-brand-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-secondary/10 rounded-full blur-3xl" />
+    <div className="min-h-full flex flex-col bg-background relative overflow-hidden">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col p-6">
+        {/* Background elements */}
+        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
 
-      <header className="mb-8 mt-4 relative z-10">
+        <header className="mb-8 mt-4 relative z-10">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Create Moment</h1>
         <p className="text-muted-foreground">What's happening right now?</p>
       </header>

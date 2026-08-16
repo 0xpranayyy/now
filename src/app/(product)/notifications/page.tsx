@@ -31,13 +31,14 @@ export default async function NotificationsPage() {
   markNotificationsAsRead();
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-background">
-      <header className="glass sticky top-0 z-20 px-4 py-4 flex items-center gap-4 border-b border-white/5">
-        <Link href="/discover" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
-          <ChevronLeft size={24} />
-        </Link>
-        <h1 className="font-bold text-lg leading-tight">Notifications</h1>
-      </header>
+    <div className="min-h-full bg-background flex flex-col">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        <header className="glass sticky top-0 z-20 px-4 py-4 flex items-center gap-4 border-b border-white/5">
+          <Link href="/discover" className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors">
+            <ChevronLeft size={24} />
+          </Link>
+          <h1 className="font-bold text-lg leading-tight">Notifications</h1>
+        </header>
 
       <div className="flex-1 overflow-y-auto pb-24">
         {!notifications || notifications.length === 0 ? (
