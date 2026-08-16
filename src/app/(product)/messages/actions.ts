@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/db/supabase/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { sendPushNotification } from "@/lib/push";
 
 export async function getOrCreateConversation(targetUserId: string) {
   const supabase = await createClient();
@@ -73,11 +74,35 @@ export async function sendDirectMessage(conversationId: string, body: string, me
 
   if (error) throw new Error(error.message);
 
+  // Send Push Notification to the other user
+  try {
+    // We need to find the other user in the conversation
+    const { data: participants } = await supabase
+      .from('conversation_participants')
+      .select('user_id')
+      .eq('conversation_id', conversationId)
+      .neq('user_id', user.id);
+      
+    if (participants && participants.length > 0) {
+      const otherUserId = participants[0].user_id;
+      const senderName = user.user_metadata?.display_name || 'Someone';
+      await sendPushNotification(
+        otherUserId,
+        `New message from ${senderName}`,
+        mediaUrl ? "Sent an image" : body,
+        `/messages/${conversationId}`
+      );
+    }
+  } catch (e) {
+    console.error("Push notification failed:", e);
+  }
+
   // Update conversation updated_at for sorting inbox
   await supabase
     .from('conversations')
     .update({ updated_at: new Date().toISOString() })
     .eq('id', conversationId);
 
+  revalidatePath('/messages');
   revalidatePath(`/messages/${conversationId}`);
 }

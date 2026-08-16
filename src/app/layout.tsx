@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { PostHogProvider } from "@/providers/PostHogProvider";
+import { PushRegistry } from "@/components/PushRegistry";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en" className={`dark ${outfit.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-brand-500/30">
         <PostHogProvider>
+          <PushRegistry />
           <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative shadow-2xl bg-background/50 min-h-[100dvh]">
             {children}
           </div>

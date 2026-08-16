@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/db/supabase/server";
 import { revalidatePath } from "next/cache";
+import { sendPushNotification } from "@/lib/push";
 
 export async function followUser(targetUserId: string) {
   const supabase = await createClient();
@@ -28,6 +29,19 @@ export async function followUser(targetUserId: string) {
       actor_id: user.id,
       type: 'follow'
     });
+
+  // Try to send push notification
+  try {
+    const followerName = user.user_metadata?.display_name || 'Someone';
+    await sendPushNotification(
+      targetUserId,
+      "New Follower!",
+      `${followerName} started following you.`,
+      `/profile/${user.id}`
+    );
+  } catch (e) {
+    console.error("Push notification failed:", e);
+  }
 
   revalidatePath(`/profile/${targetUserId}`);
   revalidatePath('/profile');
