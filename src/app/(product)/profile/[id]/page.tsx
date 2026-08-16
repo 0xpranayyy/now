@@ -5,6 +5,7 @@ import { ChevronLeft, User as UserIcon, MapPin, Calendar, MessageCircle } from "
 import { FollowButton } from "./FollowButton";
 import { getOrCreateConversation } from "@/app/(product)/messages/actions";
 import { ModerationMenu } from "@/components/ui/ModerationMenu";
+import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 
 export default async function PublicProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -112,7 +113,10 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold">{profile.display_name}</h1>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            {profile.display_name}
+            {profile.is_verified && <VerifiedBadge size={20} />}
+          </h1>
           <p className="text-brand-400 font-medium text-sm mb-4">@{profile.username}</p>
 
           {/* Stats Row */}

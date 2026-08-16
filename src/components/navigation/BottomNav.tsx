@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Map as MapIcon, PlusCircle, User, MessageCircle } from "lucide-react";
+import { Compass, Map as MapIcon, PlusCircle, User, MessageCircle, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 const NAV_ITEMS = [
   { href: "/discover", icon: Compass, label: "Discover" },
+  { href: "/explore", icon: Flame, label: "Explore" },
   { href: "/map", icon: MapIcon, label: "Map" },
   { href: "/create", icon: PlusCircle, label: "Create", highlight: true },
   { href: "/messages", icon: MessageCircle, label: "Inbox" },

@@ -22,19 +22,19 @@ ON CONFLICT (id) DO UPDATE SET
 -- Enable RLS (already enabled on objects table)
 
 -- Read access to everyone
-CREATE POLICY "Public Access"
+CREATE POLICY "Public Access Media"
 ON storage.objects FOR SELECT
 USING ( bucket_id = 'media' );
 
 -- Insert access to authenticated users
-CREATE POLICY "Authenticated Users Can Upload Media"
+CREATE POLICY "Authenticated Users Can Upload Media Bucket"
 ON storage.objects FOR INSERT
 WITH CHECK (
     bucket_id = 'media' AND auth.role() = 'authenticated'
 );
 
 -- Delete access for users who own the media
-CREATE POLICY "Users Can Delete Their Own Media"
+CREATE POLICY "Users Can Delete Their Own Media Bucket"
 ON storage.objects FOR DELETE
 USING (
     bucket_id = 'media' AND auth.uid() = owner

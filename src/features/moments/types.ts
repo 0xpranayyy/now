@@ -3,6 +3,7 @@ export type User = {
   username: string;
   name: string;
   avatarUrl?: string;
+  isVerified?: boolean;
 };
 
 export type Post = {

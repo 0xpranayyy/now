@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { createClient } from "@/lib/db/supabase/client";
 import { Moment, Post } from "@/features/moments/types";
 import { createPost } from "./actions";
+import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 
 interface LiveMomentViewProps {
   initialMoment: Moment;
@@ -53,7 +54,7 @@ export function LiveMomentView({ initialMoment, currentUserId }: LiveMomentViewP
         // Fetch author details since they aren't in the raw payload
         const { data: author } = await supabase
           .from('users')
-          .select('id, username, display_name, avatar_url')
+          .select('id, username, display_name, avatar_url, is_verified')
           .eq('id', payload.new.author_id)
           .single();
           
@@ -69,6 +70,7 @@ export function LiveMomentView({ initialMoment, currentUserId }: LiveMomentViewP
               username: author.username,
               name: author.display_name,
               avatarUrl: author.avatar_url,
+              isVerified: author.is_verified,
             }
           };
 
@@ -252,8 +254,9 @@ export function LiveMomentView({ initialMoment, currentUserId }: LiveMomentViewP
               </Link>
               <div>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <Link href={`/profile/${post.author.id}`} className="font-bold text-sm hover:underline hover:text-brand-400 transition-colors">
+                  <Link href={`/profile/${post.author.id}`} className="font-bold text-sm hover:underline hover:text-brand-400 transition-colors flex items-center gap-1">
                     {post.author.name}
+                    {post.author.isVerified && <VerifiedBadge size={14} />}
                   </Link>
                   <span className="text-xs text-muted-foreground">
                     {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

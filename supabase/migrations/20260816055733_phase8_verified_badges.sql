@@ -1,0 +1,2 @@
+-- Add is_verified to users
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false NOT NULL;

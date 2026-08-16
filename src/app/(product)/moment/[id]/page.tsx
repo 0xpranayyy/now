@@ -28,7 +28,8 @@ export default async function MomentPage({ params }: { params: Promise<{ id: str
             id,
             username,
             display_name,
-            avatar_url
+            avatar_url,
+            is_verified
           )
         )
       `)
@@ -64,6 +65,7 @@ export default async function MomentPage({ params }: { params: Promise<{ id: str
         username: p.users?.username || 'unknown',
         name: p.users?.display_name || 'Anonymous',
         avatarUrl: p.users?.avatar_url,
+        isVerified: p.users?.is_verified || false,
       }
     }))
   };

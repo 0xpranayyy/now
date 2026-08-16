@@ -26,7 +26,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ i
   // Get the other user
   const { data: otherParticipant } = await supabase
     .from('conversation_participants')
-    .select('users ( id, username, display_name, avatar_url )')
+    .select('users ( id, username, display_name, avatar_url, is_verified )')
     .eq('conversation_id', id)
     .neq('user_id', user.id)
     .single();

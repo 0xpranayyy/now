@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Map as MapIcon, PlusCircle, User, MessageCircle } from "lucide-react";
+import { Compass, Map as MapIcon, PlusCircle, User, MessageCircle, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/discover", icon: Compass, label: "Discover" },
+  { href: "/explore", icon: Flame, label: "Explore" },
   { href: "/map", icon: MapIcon, label: "Map" },
   { href: "/messages", icon: MessageCircle, label: "Inbox" },
   { href: "/profile", icon: User, label: "Profile" },

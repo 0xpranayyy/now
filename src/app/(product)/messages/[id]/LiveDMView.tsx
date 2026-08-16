@@ -7,6 +7,7 @@ import { ChevronLeft, Send, User, Camera, X } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 
 interface LiveDMViewProps {
   conversationId: string;
@@ -16,6 +17,7 @@ interface LiveDMViewProps {
     display_name: string;
     username: string;
     avatar_url: string | null;
+    is_verified?: boolean;
   };
   initialMessages: any[];
 }
@@ -124,7 +126,10 @@ export function LiveDMView({ conversationId, currentUserId, otherUser, initialMe
               )}
             </div>
             <div>
-              <h1 className="font-bold text-sm leading-tight">{otherUser.display_name}</h1>
+              <h1 className="font-bold text-sm leading-tight flex items-center gap-1">
+                {otherUser.display_name}
+                {otherUser.is_verified && <VerifiedBadge size={14} />}
+              </h1>
               <p className="text-xs text-muted-foreground">@{otherUser.username}</p>
             </div>
           </Link>
