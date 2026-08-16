@@ -1,173 +1,203 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useEffect, useState, useRef } from 'react';
+import Map, { Marker, Popup, GeolocateControl, NavigationControl } from 'react-map-gl/mapbox';
+import type { MapRef } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRouter } from 'next/navigation';
-import { Navigation } from 'lucide-react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import { Moment } from '@/features/moments/types';
-
-// Fix for default Leaflet icon paths in Next.js
-// Since Next.js doesn't easily serve Leaflet's internal assets, we create a simple custom icon
-const customIcon = new L.DivIcon({
-  className: 'custom-map-marker',
-  html: `
-    <div style="
-      width: 20px; 
-      height: 20px; 
-      background-color: #6366f1; 
-      border-radius: 50%; 
-      border: 3px solid white;
-      box-shadow: 0 0 15px rgba(99,102,241,0.8);
-      animation: pulse 2s infinite;
-    "></div>
-  `,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-});
-
-// We need some global CSS for the pulse animation if we don't have it
-if (typeof document !== 'undefined' && !document.getElementById('map-styles')) {
-  const style = document.createElement('style');
-  style.id = 'map-styles';
-  style.innerHTML = `
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(99,102,241, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(99,102,241, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(99,102,241, 0); }
-    }
-  `;
-  document.head.appendChild(style);
-}
 
 interface MapComponentProps {
   moments: Moment[];
 }
 
-// Subcomponent to handle programmatic map movement
-function MapController({ center }: { center: [number, number] }) {
-  const map = useMap();
-  useEffect(() => {
-    map.flyTo(center, map.getZoom(), {
-      animate: true,
-      duration: 1.5
-    });
-  }, [center, map]);
-  return null;
-}
-
 export default function MapComponent({ moments }: MapComponentProps) {
   const router = useRouter();
+  const mapRef = useRef<MapRef>(null);
   
-  // Set default center (e.g. San Francisco or a generic point)
-  const defaultCenter: [number, number] = [37.7749, -122.4194]; 
-  const [center, setCenter] = useState<[number, number]>(defaultCenter);
+  const defaultViewState = {
+    longitude: -122.4194,
+    latitude: 37.7749,
+    zoom: 13,
+    pitch: 45,
+    bearing: 0
+  };
 
-  // If we have moments with coordinates, center on the first one
+  const [viewState, setViewState] = useState(defaultViewState);
+  const [selectedMoment, setSelectedMoment] = useState<Moment | null>(null);
+  const [hasLocated, setHasLocated] = useState(false);
+
   useEffect(() => {
-    // Try to get user location as priority
-    if ('geolocation' in navigator) {
+    if (!hasLocated && 'geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((pos) => {
-        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        setViewState(prev => ({
+          ...prev,
+          longitude: pos.coords.longitude,
+          latitude: pos.coords.latitude,
+          zoom: 14
+        }));
+        setHasLocated(true);
       }, () => {
-        // Fallback to moment location if geolocation fails or is denied
         const momentWithCoords = moments.find(m => m.coordinates?.lat && m.coordinates?.lng);
         if (momentWithCoords && momentWithCoords.coordinates) {
-          setCenter([momentWithCoords.coordinates.lat, momentWithCoords.coordinates.lng]);
+          setViewState(prev => ({
+            ...prev,
+            longitude: momentWithCoords.coordinates.lng,
+            latitude: momentWithCoords.coordinates.lat
+          }));
         }
+        setHasLocated(true);
       });
     }
-  }, [moments]);
+  }, [moments, hasLocated]);
 
-  const handleLocateMe = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        setCenter([pos.coords.latitude, pos.coords.longitude]);
-      });
-    }
+  const onMapLoad = (e: any) => {
+    const map = e.target;
+    // Add 3D buildings
+    const layers = map.getStyle().layers;
+    const labelLayerId = layers.find(
+      (layer: any) => layer.type === 'symbol' && layer.layout['text-field']
+    )?.id;
+
+    map.addLayer(
+      {
+        id: '3d-buildings',
+        source: 'composite',
+        'source-layer': 'building',
+        filter: ['==', 'extrude', 'true'],
+        type: 'fill-extrusion',
+        minzoom: 14,
+        paint: {
+          'fill-extrusion-color': '#111',
+          'fill-extrusion-height': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            14,
+            0,
+            15.05,
+            ['get', 'height']
+          ],
+          'fill-extrusion-base': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            14,
+            0,
+            15.05,
+            ['get', 'min_height']
+          ],
+          'fill-extrusion-opacity': 0.8
+        }
+      },
+      labelLayerId
+    );
   };
+
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  if (!mapboxToken) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[100dvh] w-full text-center px-6 bg-background">
+        <h2 className="text-2xl font-bold mb-4">MapBox Token Missing</h2>
+        <p className="text-muted-foreground mb-4 max-w-sm">
+          Please add <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> to your <code>.env.local</code> file to view the 3D Map.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ height: '100dvh', width: '100%', position: 'relative', zIndex: 0 }}>
-      {/* Locate Me Button */}
-      <button 
-        onClick={handleLocateMe}
-        className="absolute bottom-24 right-4 z-[400] w-12 h-12 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-brand-400 shadow-xl hover:bg-black/70 transition-colors"
+      <Map
+        ref={mapRef}
+        {...viewState}
+        onMove={(evt: any) => setViewState(evt.viewState)}
+        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapboxAccessToken={mapboxToken}
+        onLoad={onMapLoad}
       >
-        <Navigation size={20} className="ml-[-2px] mb-[-2px]" />
-      </button>
+        <GeolocateControl position="bottom-right" style={{ marginBottom: 120, marginRight: 16 }} />
+        <NavigationControl position="bottom-right" style={{ marginRight: 16 }} showCompass={true} />
 
-      <MapContainer 
-        center={center} 
-        zoom={13} 
-        style={{ height: '100%', width: '100%' }}
-        zoomControl={false}
-      >
-        <MapController center={center} />
-
-        {/* CartoDB Dark Matter tiles (free, dark-themed, looks premium) */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
-          maxZoom={20}
-        />
-        
         {moments.map((moment) => {
-          // If the moment doesn't have coordinates, we can't map it. 
-          // For now, if we don't have PostGIS coords, we might skip rendering or mock it.
-          // Since we mocked coords in Discover feed to (0,0), let's just render them there 
-          // or at the user's location + small offset if they are perfectly 0,0.
-          
           let lat = moment.coordinates?.lat || 0;
           let lng = moment.coordinates?.lng || 0;
 
-          // HACK: If we have 0,0 (mocked), let's scatter them slightly around the center so they are visible
           if (lat === 0 && lng === 0) {
-            lat = center[0] + (Math.random() - 0.5) * 0.05;
-            lng = center[1] + (Math.random() - 0.5) * 0.05;
+             lat = viewState.latitude + (Math.random() - 0.5) * 0.05;
+             lng = viewState.longitude + (Math.random() - 0.5) * 0.05;
           }
 
           return (
             <Marker 
               key={moment.id} 
-              position={[lat, lng]} 
-              icon={customIcon}
-              eventHandlers={{
-                click: () => {
-                  router.push(`/moment/${moment.id}`);
-                },
+              longitude={lng} 
+              latitude={lat} 
+              anchor="center"
+              onClick={(e: any) => {
+                e.originalEvent.stopPropagation();
+                setSelectedMoment(moment);
               }}
             >
-              <Popup className="dark-popup">
-                <div className="flex flex-col gap-1 w-32 cursor-pointer" onClick={() => router.push(`/moment/${moment.id}`)}>
-                  <div className="font-bold text-sm truncate">{moment.title}</div>
-                  <div className="text-xs opacity-80">{moment.participantCount} here now</div>
-                  <div className="text-[10px] text-brand-500 font-bold mt-1 uppercase tracking-wider">Tap to join</div>
-                </div>
-              </Popup>
+              <div className="w-5 h-5 bg-brand-500 rounded-full border-[3px] border-white shadow-[0_0_15px_rgba(99,102,241,0.8)] animate-pulse-slow cursor-pointer" />
             </Marker>
           );
         })}
-      </MapContainer>
-      
+
+        {selectedMoment && (
+          <Popup
+            longitude={selectedMoment.coordinates?.lng || viewState.longitude}
+            latitude={selectedMoment.coordinates?.lat || viewState.latitude}
+            anchor="bottom"
+            onClose={() => setSelectedMoment(null)}
+            closeOnClick={false}
+            offset={15}
+          >
+            <div 
+              className="flex flex-col gap-1 w-32 cursor-pointer text-white" 
+              onClick={() => router.push(`/moment/${selectedMoment.id}`)}
+            >
+              <div className="font-bold text-sm truncate">{selectedMoment.title}</div>
+              <div className="text-xs text-white/80">{selectedMoment.participantCount} here now</div>
+              <div className="text-[10px] text-brand-400 font-bold mt-1 uppercase tracking-wider">Tap to join</div>
+            </div>
+          </Popup>
+        )}
+      </Map>
+
       <style jsx global>{`
-        /* Overriding Leaflet popup styles to fit our dark glass theme */
-        .leaflet-popup-content-wrapper {
-          background: rgba(10, 10, 15, 0.85);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          color: white;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 16px;
+        .mapboxgl-popup-content {
+          background: rgba(15, 15, 20, 0.9) !important;
+          backdrop-filter: blur(12px) !important;
+          -webkit-backdrop-filter: blur(12px) !important;
+          color: white !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 16px !important;
+          padding: 12px 16px !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
         }
-        .leaflet-popup-tip {
-          background: rgba(10, 10, 15, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+        .mapboxgl-popup-tip {
+          border-top-color: rgba(15, 15, 20, 0.9) !important;
+          border-bottom-color: rgba(15, 15, 20, 0.9) !important;
         }
-        .leaflet-container {
-          background: #000 !important;
+        .mapboxgl-popup-close-button {
+          color: white !important;
+          right: 8px !important;
+          top: 8px !important;
+        }
+        .mapboxgl-ctrl-group {
+          background: rgba(15, 15, 20, 0.8) !important;
+          backdrop-filter: blur(12px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 12px !important;
+          overflow: hidden;
+        }
+        .mapboxgl-ctrl-group button {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .mapboxgl-ctrl-icon {
+          filter: invert(1);
         }
       `}</style>
     </div>

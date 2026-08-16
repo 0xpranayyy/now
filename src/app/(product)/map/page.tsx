@@ -5,8 +5,8 @@ import dynamic from 'next/dynamic';
 import { createClient } from '@/lib/db/supabase/client';
 import { Moment } from '@/features/moments/types';
 
-// Leaflet relies on the window object, so it must be dynamically imported with SSR disabled
-const MapComponent = dynamic(() => import('@/components/map/MapComponent'), { 
+// Mapbox GL can be rendered on the server or client, but we'll use dynamic for consistency
+const MapComponent = dynamic(() => import('./MapComponent'), { 
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center bg-[#1A1A1A]">
