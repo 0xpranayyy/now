@@ -60,7 +60,7 @@ export default async function ProfilePage() {
             </div>
             <button 
               type="submit"
-              className="mt-2 w-full bg-brand-500 hover:bg-brand-600 text-white font-medium py-3 rounded-xl transition-colors shadow-[0_0_20px_rgba(99,102,241,0.3)]"
+              className="mt-2 w-full bg-brand-500 hover:bg-brand-600 text-white font-medium py-3 rounded-xl transition-colors shadow-sm"
             >
               Complete Setup
             </button>

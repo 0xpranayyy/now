@@ -357,7 +357,7 @@ export function LiveMomentView({ initialMoment, currentUserId }: LiveMomentViewP
             whileTap={{ scale: 0.9 }}
             type="submit" 
             disabled={isSubmitting || !currentUserId || (!inputValue.trim() && !selectedFile)}
-            className="w-12 h-12 bg-brand-500 rounded-full flex items-center justify-center text-white hover:bg-brand-600 transition-colors shrink-0 disabled:opacity-50 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+            className="w-12 h-12 bg-brand-500 rounded-full flex items-center justify-center text-white hover:bg-brand-600 transition-colors shrink-0 disabled:opacity-50 shadow-sm"
           >
             <Send size={18} className="ml-0.5" />
           </motion.button>

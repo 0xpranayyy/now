@@ -53,7 +53,7 @@ export function FollowButton({ targetUserId, initialIsFollowing, currentUserId }
         "flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all border shadow-lg",
         isFollowing 
           ? "bg-white/5 border-white/10 text-white hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20" 
-          : "bg-brand-500 border-brand-400 text-white hover:bg-brand-600 shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+          : "bg-brand-500 border-brand-400 text-white hover:bg-brand-600 shadow-sm"
       )}
     >
       {isPending ? (

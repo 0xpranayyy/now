@@ -136,7 +136,7 @@ export default function CreateMomentPage() {
           <button 
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-2xl transition-all shadow-[0_0_30px_rgba(99,102,241,0.2)] hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] mt-4 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-2xl transition-all shadow-sm hover:shadow-sm mt-4 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

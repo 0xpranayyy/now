@@ -49,7 +49,7 @@ export function BottomNav() {
                 className={cn(
                   "relative z-10 transition-colors duration-300",
                   item.highlight
-                    ? "bg-brand-500 text-white rounded-full p-3 shadow-[0_0_20px_rgba(99,102,241,0.5)] -my-2"
+                    ? "bg-brand-500 text-white rounded-full p-3 shadow-sm -my-2"
                     : isActive
                     ? "text-white"
                     : "text-muted-foreground hover:text-white/80"

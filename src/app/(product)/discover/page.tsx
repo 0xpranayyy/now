@@ -142,7 +142,7 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
             {/* Animated Background Indicator */}
             <div 
               className={cn(
-                "absolute top-1 bottom-1 w-[calc(50%-4px)] bg-brand-500 rounded-full transition-transform duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)]",
+                "absolute top-1 bottom-1 w-[calc(50%-4px)] bg-brand-500 rounded-full transition-transform duration-300 shadow-sm",
                 feed === 'following' ? "translate-x-[calc(100%+4px)]" : "translate-x-0"
               )}
             />

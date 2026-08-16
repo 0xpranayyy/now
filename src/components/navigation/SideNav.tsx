@@ -58,7 +58,7 @@ export function SideNav() {
       {/* Create Button */}
       <Link 
         href="/create"
-        className="mt-auto w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-full text-center text-lg shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] hover:-translate-y-1"
+        className="mt-auto w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-full text-center text-lg shadow-sm transition-all hover:shadow-sm hover:-translate-y-1"
       >
         <span className="flex items-center justify-center gap-2">
           <PlusCircle size={24} />

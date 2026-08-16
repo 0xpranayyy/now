@@ -108,7 +108,7 @@ export function OnboardingWizard() {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="w-full flex flex-col items-center absolute"
             >
-              <div className="w-32 h-32 bg-brand-500/20 rounded-full blur-3xl absolute -z-10" />
+              
               <h1 className="text-5xl font-black tracking-tighter mb-2 text-transparent bg-clip-text bg-gradient-to-br from-white to-white/50">NOW</h1>
               <p className="text-muted-foreground mb-12 font-medium">Enter the moment.</p>
               
@@ -161,7 +161,7 @@ export function OnboardingWizard() {
               <button 
                 disabled={!email || !email.includes('@')}
                 onClick={() => navigate(step === 'login_email' ? 'login_password' : 'signup_password', 1)}
-                className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:hover:bg-brand-500 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(99,102,241,0.2)]"
+                className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:hover:bg-brand-500 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 group shadow-sm"
               >
                 Continue
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -240,7 +240,7 @@ export function OnboardingWizard() {
               <button 
                 disabled={password.length < 6}
                 onClick={() => navigate('signup_details', 1)}
-                className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:hover:bg-brand-500 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(99,102,241,0.2)]"
+                className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:hover:bg-brand-500 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 group shadow-sm"
               >
                 Continue
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

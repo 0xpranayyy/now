@@ -178,7 +178,7 @@ export function LiveDMView({ conversationId, currentUserId, otherUser, initialMe
                   className={cn(
                     "px-4 py-2.5 rounded-2xl text-sm flex flex-col gap-2",
                     isMe 
-                      ? "bg-brand-500 text-white rounded-br-sm shadow-[0_4px_14px_rgba(99,102,241,0.3)]" 
+                      ? "bg-brand-500 text-white rounded-br-sm shadow-sm" 
                       : "bg-white/10 text-foreground rounded-bl-sm"
                   )}
                 >
@@ -252,7 +252,7 @@ export function LiveDMView({ conversationId, currentUserId, otherUser, initialMe
               whileTap={{ scale: 0.9 }}
               type="submit"
               disabled={isSending || (!inputValue.trim() && !selectedFile)}
-              className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white disabled:opacity-50 disabled:bg-white/10 transition-colors shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+              className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-white disabled:opacity-50 disabled:bg-white/10 transition-colors shrink-0 shadow-sm"
             >
               <Send size={16} className="ml-[-2px] mt-[2px]" />
             </motion.button>

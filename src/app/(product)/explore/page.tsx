@@ -89,8 +89,6 @@ export default async function ExplorePage() {
     <div className="flex flex-col h-full bg-background relative overflow-hidden">
       {/* Dynamic Background */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3" />
       </div>
 
       {/* Header */}

@@ -39,7 +39,7 @@ export function MomentCard({ moment }: MomentCardProps) {
           </div>
           
           {moment.isLive && (
-            <div className="flex items-center gap-1.5 bg-brand-500/10 text-brand-400 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase border border-brand-500/20 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+            <div className="flex items-center gap-1.5 bg-brand-500/10 text-brand-400 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase border border-brand-500/20 shadow-sm">
               <div className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse-slow" />
               LIVE
             </div>
