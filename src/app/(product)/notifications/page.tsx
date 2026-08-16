@@ -105,5 +105,6 @@ export default async function NotificationsPage() {
         )}
       </div>
     </div>
+    </div>
   );
 }

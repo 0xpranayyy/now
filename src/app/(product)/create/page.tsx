@@ -147,5 +147,6 @@ export default function CreateMomentPage() {
         </form>
       </div>
     </div>
+    </div>
   );
 }
