@@ -23,7 +23,7 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-black/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl pb-safe-offset">
+    <nav className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-black/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl pb-safe-offset">
       <div className="flex items-center justify-center gap-1 px-2 py-2">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname.startsWith(item.href);

@@ -105,67 +105,71 @@ export default async function DiscoverPage({ searchParams }: { searchParams: Pro
   }
 
   return (
-    <div className="pb-24">
-      <header className="px-6 mb-4 mt-4">
-        <div className="flex justify-between items-start mb-4">
-          <h1 className="text-3xl font-bold tracking-tight">Happening Now</h1>
-          <Link href="/notifications" className="relative p-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors mt-1">
-            <Bell size={20} className="text-foreground" />
-            {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-background rounded-full"></span>
-            )}
-          </Link>
-        </div>
-        
-        {/* Feed Toggle */}
-        <div className="flex bg-white/5 border border-white/10 rounded-full p-1 relative w-full mb-2">
-          <Link 
-            href="/discover?feed=global"
-            className={cn(
-              "flex-1 text-center py-2 text-sm font-bold rounded-full transition-colors z-10",
-              feed === 'global' ? "text-white" : "text-muted-foreground hover:text-white/80"
-            )}
-          >
-            Global
-          </Link>
-          <Link 
-            href="/discover?feed=following"
-            className={cn(
-              "flex-1 text-center py-2 text-sm font-bold rounded-full transition-colors z-10",
-              feed === 'following' ? "text-white" : "text-muted-foreground hover:text-white/80"
-            )}
-          >
-            Following
-          </Link>
+    <div className="min-h-full bg-background flex flex-col">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-3xl font-bold tracking-tight">Happening Now</h1>
+            <Link href="/notifications" className="relative p-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors mt-1">
+              <Bell size={20} className="text-foreground" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 border-2 border-background rounded-full"></span>
+              )}
+            </Link>
+          </div>
           
-          {/* Animated Background Indicator */}
-          <div 
-            className={cn(
-              "absolute top-1 bottom-1 w-[calc(50%-4px)] bg-brand-500 rounded-full transition-transform duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)]",
-              feed === 'following' ? "translate-x-[calc(100%+4px)]" : "translate-x-0"
-            )}
-          />
-        </div>
-      </header>
+          {/* Feed Toggle */}
+          <div className="flex bg-white/5 border border-white/10 rounded-full p-1 relative w-full mb-2">
+            <Link 
+              href="/discover?feed=global"
+              className={cn(
+                "flex-1 text-center py-2 text-sm font-bold rounded-full transition-colors z-10",
+                feed === 'global' ? "text-white" : "text-muted-foreground hover:text-white/80"
+              )}
+            >
+              Global
+            </Link>
+            <Link 
+              href="/discover?feed=following"
+              className={cn(
+                "flex-1 text-center py-2 text-sm font-bold rounded-full transition-colors z-10",
+                feed === 'following' ? "text-white" : "text-muted-foreground hover:text-white/80"
+              )}
+            >
+              Following
+            </Link>
+            
+            {/* Animated Background Indicator */}
+            <div 
+              className={cn(
+                "absolute top-1 bottom-1 w-[calc(50%-4px)] bg-brand-500 rounded-full transition-transform duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)]",
+                feed === 'following' ? "translate-x-[calc(100%+4px)]" : "translate-x-0"
+              )}
+            />
+          </div>
+        </header>
 
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl mb-6">
-          Error loading moments: {error.message}
-        </div>
-      )}
+        <main className="flex-1 pb-24">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl mb-6">
+              Error loading moments: {error.message}
+            </div>
+          )}
 
-      {mappedMoments.length === 0 && !error ? (
-        <div className="text-center py-20 opacity-50 px-6">
-          <p>{feed === 'following' ? "No moments from people you follow." : "No active moments nearby."}</p>
-          <p className="text-sm mt-2">{feed === 'following' ? "Follow more people to see their moments here." : "Be the first to start one!"}</p>
-        </div>
-      ) : (
-        <div className="flex flex-col">
-          {mappedMoments.map((moment) => (
-            <MomentCard key={moment.id} moment={moment} />
-          ))}
-        </div>
-      )}
+          {mappedMoments.length === 0 && !error ? (
+            <div className="text-center py-20 opacity-50 px-6">
+              <p>{feed === 'following' ? "No moments from people you follow." : "No active moments nearby."}</p>
+              <p className="text-sm mt-2">{feed === 'following' ? "Follow more people to see their moments here." : "Be the first to start one!"}</p>
+            </div>
+          ) : (
+            <div className="flex flex-col">
+              {mappedMoments.map((moment) => (
+                <MomentCard key={moment.id} moment={moment} />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

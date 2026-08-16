@@ -93,36 +93,63 @@ export default async function InboxPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={convo.otherUser.avatar_url} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                      <User size={20} />
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold truncate">{convo.otherUser?.display_name || 'Unknown User'}</h3>
-                    {convo.latestMessage && (
-                      <span className="text-xs text-muted-foreground shrink-0 ml-2">
-                        {new Date(convo.latestMessage.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
+    <div className="min-h-full bg-background flex flex-col">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 px-6 py-6 flex justify-between items-center">
+          <h1 className="text-2xl font-bold tracking-tight">Messages</h1>
+        </header>
+
+        <main className="flex-1 overflow-y-auto px-4 py-4">
+          {conversations.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 opacity-50">
+              <MessageCircle size={48} className="mb-4 text-muted-foreground" />
+              <p>No messages yet.</p>
+              <p className="text-sm mt-1">Start a conversation from a user's profile.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {conversations.map((convo) => (
+                <Link 
+                  key={convo.id} 
+                  href={`/messages/${convo.id}`}
+                  className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/5 transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-full bg-secondary overflow-hidden shrink-0">
+                    {convo.otherUser?.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={convo.otherUser.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        <User size={20} />
+                      </div>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {convo.latestMessage ? (
-                      <>
-                        {convo.latestMessage.sender_id === user.id ? 'You: ' : ''}
-                        {convo.latestMessage.body}
-                      </>
-                    ) : (
-                      <span className="italic">No messages yet</span>
-                    )}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <h3 className="font-bold truncate">{convo.otherUser?.display_name || 'Unknown User'}</h3>
+                      {convo.latestMessage && (
+                        <span className="text-xs text-muted-foreground shrink-0 ml-2">
+                          {new Date(convo.latestMessage.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {convo.latestMessage ? (
+                        <>
+                          {convo.latestMessage.sender_id === user.id ? 'You: ' : ''}
+                          {convo.latestMessage.body}
+                        </>
+                      ) : (
+                        <span className="italic">No messages yet</span>
+                      )}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );
